@@ -3,12 +3,15 @@ package net.iessochoa.jesusayala.practica3
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import net.iessochoa.jesusayala.practica3.databinding.ActivityMainBinding
 
 private const val TAG = "mostrar log"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    val model:MainActivityViewModel by viewModels()
     var num: Int = 0
 
 
@@ -17,10 +20,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.tvNumero.text = num.toString()
         binding.btSumaUno.setOnClickListener(){
-            num++
-            binding.tvNumero.text = num.toString()
+            model.sumaUno()
+            model.getContador().observe(this, Observer<Int>{
+                    cont-> binding.tvNumero.text=cont.toString()
+            })
+            model.sumarAsterisco()
+            model.getAstericos().observe(this, Observer<String>{
+                ast-> binding.tvAsteriscos.text = ast.toString()
+            })
         }
 
         Log.i(TAG, "onCreate")
